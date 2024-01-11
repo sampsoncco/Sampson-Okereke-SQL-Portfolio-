@@ -1,0 +1,533 @@
+--create and name the database UNION_BANK---
+
+CREATE DATABASE Union_bank;
+
+
+--we were required to create BORROWER,LOAN AND DBO(DEFAULT) SCHEMA--
+
+
+CREATE SCHEMA Borrower;
+
+CREATE SCHEMA Loan;
+
+
+----BORROWER SCHEMA CONSIST OF TWO TABLES
+--Borrower Table  
+--Borrower Address Table 
+
+
+----Loan schema consist five tables 
+--Loan Setup Information Table
+--Loan Periodic TableA
+--Delinquencies (table name: LU_Delinquency) 
+--Payment Frequency (table name: LU_PaymentFrequency)
+-- Underwriter Table
+
+
+---dbo (default) schema consist of three table 
+--Calendar Table
+--US_ZipCodes Table
+-- State Table 
+
+
+
+
+------------------ HOW WE ATTACHED THE SCHEMA TO THE TABLES AND ALSO CREATE OUR COLUMNS------------
+
+
+CREATE TABLE borrower.borrower
+(BorrowiD           INT NOT NULL, 
+ BorrowerFirstName  VARCHAR(255) NOT NULL, 
+ BorrowermiddleName CHAR(1) NOT NULL, 
+ BorrowerLastName   VARCHAR(255) NOT NULL, 
+ DOB                DATETIME NOT NULL, 
+ Gender             CHAR(1) NULL, 
+ TaxPayeriD_SSN     VARCHAR(9) NOT NULL, 
+ PhoneNumber        VARCHAR(10) NOT NULL, 
+ Email              VARCHAR(255) NOT NULL, 
+ citizenship        VARCHAR(255) NULL, 
+ BeneficiaryName    VARCHAR(255) NULL, 
+ IsUScitizen        BIT NULL, 
+ createdate         DATETIME NULL);
+
+
+ 
+
+CREATE TABLE [Borrower].[BorrowerAddress]
+(AddressID     INT NOT NULL, 
+ BorrowerID    INT NOT NULL, 
+ StreetAddress VARCHAR(255) NOT NULL, 
+ ZIP           VARCHAR(5) NOT NULL, 
+ createdate    DATETIME NULL);
+
+
+
+
+CREATE TABLE calendar(calendarDate DATETIME NULL);
+
+
+
+CREATE TABLE State
+(stateID    CHAR(2) NOT NULL, 
+ stateName  VARCHAR(255) NOT NULL, 
+ CreateDate DATETIME NOT NULL);
+
+
+
+
+CREATE TABLE US_ZipCodes
+(isSurrogateKey   INT NOT NULL, 
+ ZIP              VARCHAR(5) NOT NULL, 
+ Latitude         FLOAT NULL, 
+ Longitude        FLOAT NULL, 
+ city             VARCHAR(255) NULL, 
+ state_id         CHAR(2) NULL, 
+ [population]     INT NULL, 
+ density          DECIMAL(18, 0) NULL, 
+ county_fips      VARCHAR(10) NULL, 
+ county_name      VARCHAR(225) NULL, 
+ county_names_all VARCHAR(255) NULL, 
+ county_fips_all  VARCHAR(50) NULL, 
+ timezone         VARCHAR(255) NULL, 
+ createDate       DATETIME NOT NULL);
+
+
+
+
+
+CREATE TABLE Loan.LoanSetupinformation
+(IsSurrogateKey           INT NOT NULL, 
+ LoanNumber               VARCHAR(10) NOT NULL, 
+ PurchaseAmount           NUMERIC(18, 2) NOT NULL, 
+ PurchaeDate              DATETIME NOT NULL, 
+ LoanTerm                 INT NOT NULL, 
+ BorrowerID               INT NOT NULL, 
+ UnderwriterID            INT NOT NULL, 
+ ProductID                CHAR(2) NOT NULL, 
+ interestRate             DECIMAL(3, 2) NOT NULL, 
+ PaymentFrequency         INT NOT NULL, 
+ AppraisalValue           NUMERIC(18, 2) NOT NULL, 
+ CreateDate               DATETIME NOT NULL, 
+ LTV                      DECIMAL(4, 2) NOT NULL, 
+ FirstInterestPaymentDate DATETIME NULL, 
+ MaturityDate             DATETIME NOT NULL);
+
+
+ 
+
+ 
+
+CREATE TABLE Loan.Loanperiodic
+(Issurogatekey            INT NOT NULL, 
+ Loannumber               VARCHAR(10) NOT NULL, 
+ Cycledate                DATETIME NOT NULL, 
+ Extramonthlypayment      NUMERIC(18, 2) NOT NULL, 
+ Unpaidprincipalbalance   NUMERIC(18, 2) NOT NULL, 
+ Beginningschedulebalance NUMERIC(18, 2) NOT NULL, 
+ Paidinstallment          NUMERIC(18, 2) NOT NULL, 
+ Intrestportion           NUMERIC(18, 2) NOT NULL, 
+ Principalportion         NUMERIC(18, 2) NOT NULL, 
+ Endschedulebalance       NUMERIC(18, 2) NOT NULL, 
+ Actualendschedulebalance NUMERIC(18, 2) NOT NULL, 
+ Totalinterestaccrued     NUMERIC(18, 2) NOT NULL, 
+ Totalprincipalaccured    NUMERIC(18, 2) NOT NULL, 
+ DEFAULTPENALTY           NUMERIC(18, 2) NOT NULL, 
+ Delinquencycode          INT  NOT NULL, 
+ Createdate               DATETIME NOT NULL);
+
+
+ 
+
+
+CREATE TABLE Loan.LU_Delinquency
+(DelinquencyCode INT NOT NULL, 
+ Deliquency      VARCHAR(255) NOT NULL);
+
+ 
+
+
+ 
+CREATE TABLE Loan.LU_PaymentFrequency
+(PaymentFrequency             INT NOT NULL, 
+ PaymentIsMadeEvery           INT NOT NULL, 
+ PaymentFrequency_Description VARCHAR(255) NOT NULL);
+
+
+ ALTER TABLE Loan.LU_PaymentFrequency
+ADD CONSTRAINT pk_LU_PaymentFrequency_PaymentFrequency PRIMARY KEY
+(PaymentFrequency);
+
+
+
+ CREATE TABLE Loan.Underwriter
+(UnderwriterID            INT NOT NULL, 
+ UnderWriterFirstName     VARCHAR(255) NULL, 
+ UnderWritermiddleinitial CHAR(1) NULL, 
+ UnderWriterLastname      VARCHAR(255) NOT NULL, 
+ phonenumber              VARCHAR(14) NULL, 
+ email                    VARCHAR(255) NOT NULL, 
+ CreateDate               DATETIME NOT NULL);
+
+
+
+
+---------------------------------PRIMARY KEY-----------------------------------------------------------
+
+-----BORROWER.BORROWER
+
+--Added a primary key  to [Borrower].[borrower] table using the 
+--borrowerID
+
+ALTER TABLE [Borrower].[borrower]
+ADD CONSTRAINT pk_borrower_borrowerid PRIMARY KEY(borrowerid);
+
+
+
+--------Borrower.BorrowerAddress
+
+ ---create primary key for the Borrower.BorrowerAddress table---
+
+ ALTER TABLE Borrower.BorrowerAddress
+ADD CONSTRAINT pk_borrowerAddress_AddressID PRIMARY KEY(AddressID);
+
+
+
+-------[dbo].[calendar]
+--primary key was not created on the[dbo].[calendar] table because  it doesnt have a  unique identifier--
+
+
+
+
+------union_bank.dbo.state
+
+ --we created the primary key on the union_bank table  for state ---
+
+ ALTER TABLE union_bank.dbo.state
+ADD CONSTRAINT pk_state_stateID PRIMARY KEY(stateID);
+
+
+
+------union_bank.[dbo].[US_ZipCodes]
+
+ALTER TABLE union_bank.[dbo].[US_ZipCodes]
+ADD CONSTRAINT pk_us_zipcodes_ZIP PRIMARY KEY(zip);
+
+
+-------[Loan].[Loanperiodic]
+
+
+ALTER TABLE Loan.Loanperiodic
+ADD CONSTRAINT pk_Loanperiodic_Loannumber PRIMARY KEY(Loannumber);
+
+
+
+-----[Loan].[LoanSetupinformation]
+
+
+ALTER TABLE Loan.LoanSetupinformation
+ADD CONSTRAINT pk_LoanSetupinformation_LoanNumber PRIMARY KEY(LoanNumber);
+
+
+-----[Loan].[LU_Delinquency]
+
+ALTER TABLE Loan.LU_Delinquency
+ADD CONSTRAINT pk_LU_Delinquency_DelinquencyCode PRIMARY KEY
+(DelinquencyCode);
+
+
+---[Loan].[LU_PaymentFrequency]
+
+
+ ALTER TABLE Loan.LU_PaymentFrequency
+ADD CONSTRAINT pk_LU_PaymentFrequency_PaymentFrequency PRIMARY KEY
+(PaymentFrequency);
+
+
+---[Loan].[Underwriter]
+
+
+ALTER TABLE Loan.Underwriter
+ADD CONSTRAINT pk_Underwriter_UnderwriterID PRIMARY KEY(UnderwriterID);
+
+
+
+
+-------------------------  CONSTRAINTS ON BORROWER.BORROWER TABLE ------------------------------------------------
+
+
+--All borrower should be at least 18 years as of the  date of  entry--
+
+ALTER TABLE borrower.borrower
+ADD CONSTRAINT chk_borrower_DOB CHECK(DOB <= DATEADD(year, -18, GETDATE()));
+
+
+
+--WE  USE THE 'LIKE' OPERTOR AND THE 'CHECK CONSTRAINT ' TO SHOW THAT THE EMAIL CONTAIN THE @ SYMBOL---
+
+ALTER TABLE [Borrower].[borrower]
+ADD CONSTRAINT CHK_borrower_EMAIL CHECK(email LIKE '%_@_%._%');
+
+
+---we added the check constraint on the  phone number to ensure that the  number----
+---entered should  not be  less or more than 10 digit ---
+
+ALTER TABLE [Borrower].[borrower]
+ADD CONSTRAINT chk_borrower_PhoneNumber CHECK(LEN(PhoneNumber) = 10);
+
+
+---we added the check constraint on the Taxpayerid_ssn to ensure that the number---
+--entered should not be  less or more than  9 digit---
+
+ALTER TABLE [Borrower].[borrower]
+ADD CONSTRAINT chk_borrower_TaxPayeriD_SSN CHECK(LEN(TaxPayeriD_SSN) = 9);
+ 
+
+ ---we added the default constraint to ensure that  if no value  is ---- 
+ --entered the createdate should be set to default as current date----
+
+ALTER TABLE borrower.borrower
+ADD CONSTRAINT Df_borrower_createdate DEFAULT(GETDATE()) FOR createdate;
+
+
+---we use the  unique constraint on the borrowerid as a  unique identifier of a record----
+
+ALTER TABLE borrower.borrower
+add constraint unq_borrower_borrowerID unique (borrowerID);
+
+
+
+--------------------------CONSTRAINTS ON BORROWER.BORROWER ADDRESS TABLE------------------------------------------
+
+
+ ---we added the default constraint to ensure that  if no value  is ---- 
+ --entered the createdate should be set to default as current date----
+ 
+ALTER TABLE [Borrower].[BorrowerAddress]
+ADD CONSTRAINT Df_BorrowerAddress_createdate DEFAULT(GETDATE()) FOR createdate;
+
+
+---we use the 'FOREIGN CONSTRAINT' to join borrower.borrower table to borrower.borroweraddress table---
+---with borrowerid as unique identifier-----
+
+ALTER TABLE [Borrower].[BorrowerAddress]
+ADD CONSTRAINT fk_BorrowerAddress_borrowerid FOREIGN KEY(borrowerid)
+REFERENCES Borrower.borrower(borrowerid);
+
+
+---we use the 'FOREIGN CONSTRAINT' to join US_zipcodes table to borrower.borroweraddress table---
+---with 'ZIP' as unique identifier-----
+
+ALTER TABLE [Borrower].[BorrowerAddress]
+ADD CONSTRAINT fk_BorrowerAddress_ZIP FOREIGN KEY(ZIP)
+REFERENCES US_ZipCodes(ZIP);
+
+
+--we combined addressid and borrowerid as unique identifier of a record on borroweraddress table----
+
+ALTER TABLE [Borrower].[BorrowerAddress]
+ADD CONSTRAINT unq_borroweraddress_addressid_borrowerid UNIQUE(addressid, borrowerid);
+
+
+--------------------------CONSTRAINT ON LOANPERIODIC TABLE --------------------------------------
+
+
+
+-- check was constraint to satisfy the intrestportion
+---plus the principalportion which was equal to  paidinstallment
+
+
+ALTER TABLE [Loan].[Loanperiodic]
+ADD CONSTRAINT chk_loanperiodic_Intrestportion_Principalportion_Paidinstallment
+CHECK([Intrestportion] + [Principalportion] = [Paidinstallment]);
+
+
+------we added the default constraint to ensure that  if no value  is ---- 
+ --entered the createdate should be set to default as current date----
+
+ALTER TABLE [Loan].[Loanperiodic]
+ADD CONSTRAINT Df_Loanperiodic_createdate DEFAULT(GETDATE()) FOR createdate;
+
+
+---if no value is inserted the default value should be set to '0'-----
+
+ALTER TABLE [Loan].[Loanperiodic]
+ADD CONSTRAINT Df_loanoeriodic_Extramonthlypayment DEFAULT(0) FOR Extramonthlypayment;
+
+
+--we use loannumber as a foriegn key to join loan.loanperiodic table to loan.loansetupinformation table--
+
+ALTER TABLE [Loan].[Loanperiodic]
+ADD CONSTRAINT fk_loanperiodic_LoanNumber FOREIGN KEY(loannumber) 
+REFERENCES Loan.Loansetupinformation(loannumber);
+
+
+----we use deliquencecode on loan.loanperiodic table and loan.loansetupinformation table---
+---to create a  foreign key constraint------
+
+ALTER TABLE [Loan].[Loanperiodic]
+ADD CONSTRAINT fk_loanperiodic_Delinquencycode FOREIGN KEY(Delinquencycode)
+REFERENCES [Loan].[LU_Delinquency](Delinquencycode);
+
+
+---we added the unique constraint on the loannumber and cycledate columns on the loanperiodic table-----
+
+ALTER TABLE [Loan].[Loanperiodic]
+ADD CONSTRAINT unq_loanperiodic_loannumber_cycledate UNIQUE(loannumber, cycledate);
+
+
+
+---------------------CONSTRAINTS ON THE LOANSETUPINFORMATION TABLE-----------------------------------------
+
+---we use the check and the in operator to specify the number of values to be inserted into  the column---
+
+ALTER TABLE [Loan].[LoanSetupinformation]
+ADD CONSTRAINT chq_LoanSetupinformation_loanterm CHECK(loanterm IN (35, 30, 15, 10));
+
+
+
+--The check constraint and the between operator were used to limit only the values specified in the table---
+
+ALTER TABLE [Loan].[LoanSetupinformation]
+ADD CONSTRAINT chq_loansetinformation_interestRate CHECK(interestrate BETWEEN 0.01 AND 0.30);
+
+
+
+------ The default constraint was used to ensure that  if no value  is  
+ --entered the createdate should be set to default as the current date
+ 
+ALTER TABLE [Loan].[LoanSetupinformation]
+ADD CONSTRAINT Df_loansetinformation_createdate DEFAULT GETDATE() FOR createdate;
+
+
+---A Foreign key was used to join the  loansetupinformation table and borrower.borrower---
+----table with the  borrowerid as a unique identifier---- 
+
+ALTER TABLE [Loan].[LoanSetupinformation]
+ADD CONSTRAINT fk_loansetupinformation_borrowerid FOREIGN KEY(borrowerid) 
+REFERENCES [Borrower].[borrower](borrowerid);
+
+
+
+------A Foreign key was used to join the  loansetupinformation table and Loan.LU_PaymentFrequency---
+----table with the paymentfrequency as a unique identifier---- 
+
+ALTER TABLE [Loan].[LoanSetupinformation]
+ADD CONSTRAINT fk_loansetupinformation_PaymentFrequency FOREIGN KEY(PaymentFrequency)
+REFERENCES Loan.LU_PaymentFrequency(PaymentFrequency);
+
+
+
+------A Foreign key was used to join the  loansetupinformation table and loan.Underwriter----
+----table with the paymentfrequency as a unique identifier---- 
+
+ALTER TABLE [Loan].[LoanSetupinformation]
+ADD CONSTRAINT fk_loansetupinformation_UnderwriterID FOREIGN KEY(UnderwriterID) 
+REFERENCES Loan.Underwriter(UnderwriterID);
+
+
+-----A unique constraint was use on the loannumber column in the loan.loansetupinformation table---
+
+ALTER TABLE [Loan].[LoanSetupinformation]
+ADD CONSTRAINT unq_LoanSetupinformation_LoanNumber UNIQUE(loannumber);
+
+
+
+------------------------CONSTRAINT ON LOAN.LU_DELIQUENCY TABLE ----------------------------
+
+
+-----A unique constraint was use on the Delinquencycode column in the Loan.LU_Delinquency table
+
+ALTER TABLE [Loan].[LU_Delinquency]
+ADD CONSTRAINT unq_LU_Delinquency_DelinquencyCode UNIQUE(delinquencycode);
+
+
+------------------------CONSTRAINT ON LU_PaymentFrequency TABLE ----------------------------------------
+
+
+
+---A unique constraint was use as a unique identifier of records on the paymentfrequency column 
+--in the Loan.LU_PaymentFrequency table
+
+ALTER TABLE [Loan].[LU_PaymentFrequency]
+ADD CONSTRAINT unq_LU_PaymentFrequency_PaymentFrequency UNIQUE(paymentfrequency);
+
+
+
+----------------------------------	CONSTRAINT ON STATE TABLE------------------------------------------
+
+
+
+------ The default constraint was used to ensure that  if no value  is  
+ --entered the createdate should be set to default as the current date
+
+ALTER TABLE [dbo].[State]
+ADD CONSTRAINT df_state_createdate DEFAULT GETDATE() FOR createdate;
+
+
+---A unique constraint was use as a unique identifier of records on the paymentfrequency column 
+--in the Loan.LU_PaymentFrequency table.
+
+
+ALTER TABLE [dbo].[State]
+ADD CONSTRAINT unq_state_stateid UNIQUE(stateid);
+
+
+---The statename was use as the unique constraint in the dbo.state table 
+
+ALTER TABLE [dbo].[State]
+ADD CONSTRAINT unq_state_statename UNIQUE(statename);
+
+
+-----------------------------CONSTRAINT ON UNDERWRITER TABLE---------------------------------------------
+
+
+--WE  USE THE 'LIKE' OPERTOR AND THE 'CHECK CONSTRAINT ' TO SHOW THAT THE EMAIL CONTAIN THE @ SYMBOL---
+
+ALTER TABLE [Loan].[Underwriter]
+ADD CONSTRAINT chq_underwriter_email CHECK(email LIKE '%@%');
+
+
+
+---- The default constraint was used to ensure that  if no value  is  
+ --entered the createdate should be set to default as the current date
+
+ALTER TABLE [Loan].[Underwriter]
+ADD CONSTRAINT df_underwriter_createdate DEFAULT GETDATE() FOR createdate;
+
+
+
+---The underwriterid  was use as the unique constraint in the [Loan].[Underwriter] table. 
+
+ALTER TABLE [Loan].[Underwriter]
+ADD CONSTRAINT unq_underwriter_underwriterID UNIQUE(underwriterid);
+
+
+
+------------------------------CONSTRAINT ON US_ZipCodes TABLE--------------------------------------------
+
+
+
+------ The default constraint was used to ensure that  if no value  is  
+ --entered the createdate should be set to default as the current date
+
+
+ALTER TABLE [dbo].[US_ZipCodes]
+ADD CONSTRAINT df_us_zipcodes_createdate DEFAULT GETDATE() FOR createdate;
+
+
+
+
+--alter table [dbo].[US_ZipCodes]
+--add constraint fk_us_zipcodes_stateid FOREIGN KEY(stateid) REFERENCES [Loan].[Underwriter](stateid);
+
+
+
+
+
+
+---The ZIP was use as the unique constraint in the [dbo].[US_ZipCodes] table.
+
+ALTER TABLE [dbo].[US_ZipCodes]
+ADD CONSTRAINT unq_us_zipcodes_ZIP UNIQUE([ZIP]);
+
+select * from [Loan].[Loanperiodic];
